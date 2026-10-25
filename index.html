@@ -4,59 +4,240 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101010">
   <title>CinePassCI - Films en ligne</title>
   <style>
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       background: #101010;
       color: white;
       font-family: Arial, sans-serif;
     }
+
     header {
       background: #e50914;
-      padding: 20px;
+      padding: 22px 15px;
       text-align: center;
-      font-size: 26px;
-      font-weight: bold;
     }
-    main { padding: 20px; }
+
+    header h1 { margin: 0; font-size: 30px; }
+    header p { margin-bottom: 0; }
+
+    main { padding: 20px; max-width: 1000px; margin: auto; }
+
+    .hero {
+      padding: 25px 10px;
+      text-align: center;
+    }
+
+    .hero h2 { font-size: 27px; }
+
+    input, select {
+      width: 100%;
+      padding: 13px;
+      margin: 8px 0;
+      border-radius: 7px;
+      border: 1px solid #444;
+      background: #222;
+      color: white;
+      font-size: 16px;
+    }
+
+    .catalogue {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 15px;
+    }
+
     .film {
       background: #222;
-      padding: 15px;
-      margin: 15px 0;
       border-radius: 10px;
+      overflow: hidden;
+      padding-bottom: 15px;
     }
+
+    .poster {
+      height: 145px;
+      background: linear-gradient(135deg, #650000, #171717);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+    }
+
+    .film h3, .film p { margin: 12px; }
+
+    .film p {
+      color: #ccc;
+      font-size: 14px;
+    }
+
     button {
       background: #e50914;
       color: white;
       border: 0;
-      padding: 12px 18px;
-      border-radius: 5px;
+      border-radius: 6px;
+      padding: 12px;
       font-weight: bold;
+      cursor: pointer;
     }
+
+    .film button {
+      width: calc(100% - 24px);
+      margin: 0 12px;
+    }
+
+    .offres {
+      margin-top: 35px;
+      padding: 20px;
+      background: #202020;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .offres button { margin: 5px; }
+
+    footer {
+      text-align: center;
+      color: #aaa;
+      padding: 25px 10px;
+      font-size: 13px;
+    }
+
+    .empty { text-align: center; padding: 20px; }
+
   </style>
 </head>
 <body>
-  <header>CinePassCI</header>
-  <main>
+
+<header>
+  <h1>🎬 CinePassCI</h1>
+  <p>Votre cinéma en ligne</p>
+</header>
+
+<main>
+  <section class="hero">
     <h2>Bienvenue sur CinePassCI</h2>
-    <p>Découvre tes films préférés en ligne.</p>
+    <p>Découvrez votre prochain film préféré.</p>
 
-    <div class="film">
-      <h3>Film 1</h3>
-      <p>Accède à ce film après paiement.</p>
-      <button onclick="alert('Le paiement sera bientôt disponible.')">
-        Voir les offres
-      </button>
-    </div>
+    <input
+      id="recherche"
+      type="search"
+      placeholder="Rechercher un film..."
+      aria-label="Rechercher un film"
+    >
 
-    <div class="film">
-      <h3>Film 2</h3>
-      <p>Découvre bientôt notre catalogue.</p>
-      <button onclick="alert('Le paiement sera bientôt disponible.')">
-        Voir les offres
+    <select id="categorie" aria-label="Choisir une catégorie">
+      <option value="tous">Toutes les catégories</option>
+      <option value="action">Action</option>
+      <option value="comedie">Comédie</option>
+      <option value="drame">Drame</option>
+    </select>
+  </section>
+
+  <h2>🎥 Notre catalogue</h2>
+
+  <section class="catalogue" id="catalogue">
+
+    <article class="film" data-name="film action" data-category="action">
+      <div class="poster">🎬</div>
+      <h3>Film Action</h3>
+      <p>Catégorie : Action</p>
+      <button onclick="voirFilm('Film Action')">
+        Découvrir
       </button>
-    </div>
-  </main>
+    </article>
+
+    <article class="film" data-name="film comedie" data-category="comedie">
+      <div class="poster">🍿</div>
+      <h3>Film Comédie</h3>
+      <p>Catégorie : Comédie</p>
+      <button onclick="voirFilm('Film Comédie')">
+        Découvrir
+      </button>
+    </article>
+
+    <article class="film" data-name="film drame" data-category="drame">
+      <div class="poster">🎭</div>
+      <h3>Film Drame</h3>
+      <p>Catégorie : Drame</p>
+      <button onclick="voirFilm('Film Drame')">
+        Découvrir
+      </button>
+    </article>
+
+  </section>
+
+  <p id="aucun" class="empty" hidden>
+    Aucun film trouvé.
+  </p>
+
+  <section class="offres" id="abonnements">
+    <h2>⭐ Nos abonnements</h2>
+    <p>Choisissez votre formule pour accéder aux films.</p>
+
+    <button onclick="choisirOffre('Journalier')">
+      Offre journalière
+    </button>
+
+    <button onclick="choisirOffre('Mensuel')">
+      Offre mensuelle
+    </button>
+
+    <p id="message"></p>
+  </section>
+</main>
+
+<footer>
+  <p>© 2026 CinePassCI - Tous droits réservés.</p>
+  <p>Films diffusés avec autorisation.</p>
+</footer>
+
+<script>
+  const recherche = document.getElementById("recherche");
+  const categorie = document.getElementById("categorie");
+  const films = document.querySelectorAll(".film");
+  const aucun = document.getElementById("aucun");
+
+  function filtrerFilms() {
+    const texte = recherche.value.toLowerCase().trim();
+    const choix = categorie.value;
+    let visibles = 0;
+
+    films.forEach(function(film) {
+      const nom = film.dataset.name;
+      const type = film.dataset.category;
+
+      const correspond =
+        nom.includes(texte) &&
+        (choix === "tous" || choix === type);
+
+      film.hidden = !correspond;
+      if (correspond) visibles++;
+    });
+
+    aucun.hidden = visibles > 0;
+  }
+
+  recherche.addEventListener("input", filtrerFilms);
+  categorie.addEventListener("change", filtrerFilms);
+
+  function voirFilm(nom) {
+    document.getElementById("message").textContent =
+      nom + " : connectez-vous et souscrivez à une offre pour accéder au visionnage.";
+    document.getElementById("abonnements").scrollIntoView({
+      behavior: "smooth"
+    });
+  }
+
+  function choisirOffre(nom) {
+    document.getElementById("message").textContent =
+      "Vous avez choisi l'offre " + nom +
+      ". Les tarifs et le paiement sécurisé doivent encore être configurés.";
+  }
+</script>
+
 </body>
 </html>
